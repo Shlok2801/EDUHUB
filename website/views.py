@@ -14,7 +14,6 @@ views = Blueprint('views', __name__)
 def home():
     role = current_user.role
     if role == 'student':
-        
         return render_template('home_student.html', user=current_user)
     else:
         

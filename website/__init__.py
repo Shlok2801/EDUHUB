@@ -17,7 +17,9 @@ def create_app():
     from .views import views
     from .auth import auth
     from .submission import submission
-    app.register_blueprint(submission, url_prefix='/')    
+    from .course import course
+    app.register_blueprint(course, url_prefix='/')  
+    app.register_blueprint(submission, url_prefix='/')
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
 

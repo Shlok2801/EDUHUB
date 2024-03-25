@@ -15,6 +15,7 @@ class User(db.Model, UserMixin):
     discussion = db.relationship('Discussion')
     notification = db.relationship('Notification')
     submission = db.relationship('Submission')
+    enroll = db.relationship('Enroll')
     
 class Assignment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -33,7 +34,12 @@ class Course(db.Model):
     material = db.relationship('Material')
     notification = db.relationship('Notification')
     assignment = db.relationship('Assignment')
+    enroll = db.relationship('Enroll')
 
+class Enroll(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 class Discussion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     message = db.Column(db.String(1000))
