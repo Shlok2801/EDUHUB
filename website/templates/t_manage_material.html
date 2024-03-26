@@ -1,0 +1,20 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+    %}
+    <h1 align="center">Manage material
+    <br />
+    <br />
+    <form method="POST">
+        <div align="center">
+            <input
+              type="textarea"
+              class="form-control"
+              id="course_id"
+              name="course_id"
+              placeholder="Enter the descritpion of the material"
+            />
+            <button type="button" class="btn btn-primary">Add file</button>
+            <button type="submit" class="btn btn-primary">Publish material</button>
+        </div>
+    </form>
+    </h1>
+    {% endblock %}
