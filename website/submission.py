@@ -28,7 +28,7 @@ def view_teacher():
         if len(assignment) < 1:
             flash('Please enter an assignment!', category='error')
         else:
-            new_assignment = Assignment(data=assignment, user_id=current_user.id)
+            new_assignment = Assignment(data=assignment, creator=current_user.id)
             db.session.add(new_assignment)
             db.session.commit()
             flash('Assignment created successfully!', category='success')
@@ -41,7 +41,7 @@ def delete_assignment():
     assignmentId = assignment['assignmentId']
     assignment = Assignment.query.get(assignmentId)
     if assignment:
-        if assignment.user_id == current_user.id:
+        if assignment.creator == current_user.id:
             db.session.delete(assignment)
             db.session.commit()
             flash('Assignment deleted successfully!', category='success')

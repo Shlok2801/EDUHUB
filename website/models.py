@@ -16,7 +16,10 @@ class User(db.Model, UserMixin):
     notification = db.relationship('Notification')
     submission = db.relationship('Submission')
     enroll = db.relationship('Enroll')
-    
+
+    def __str__(self):
+        return f"id : {self.id}, role is {self.role}, email is {self.email} "
+
 class Assignment(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     data = db.Column(db.String(1000000000000000000000000000000))

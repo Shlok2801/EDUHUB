@@ -15,7 +15,7 @@ class UploadFileForm(FlaskForm):
     submit = SubmitField('Upload')
 
 
-@course.route('/', methods=['GET', 'POST'])
+@course.route('/course-s', methods=['GET', 'POST'])
 @login_required
 def view_student():
     if request.method=='POST':
@@ -58,7 +58,7 @@ def view_teacher():
             db.session.commit()
             flash('Course created successfully!', category='success')
 
-    return render_template('teacher_create_course.html', user=current_user)
+    return render_template('teacher_manage_courses.html', user=current_user)
 
 @course.route('/delete-assignment', methods=['POST'])
 def delete_assignment():
