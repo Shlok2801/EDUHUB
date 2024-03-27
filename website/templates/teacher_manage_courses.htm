@@ -4,5 +4,16 @@
     <br />
     <br />
     <a href="teacher_create_course.html" id="new course"><button class="btn btn-primary">New course</button></a>
-    </h1>
+    <br />
+    <br />
+    <ul class="list-group list-group-flush" id="courses">
+        {% for course in user.course %}
+        <li class="list-group-item">{{ course.name }}
+            <button class ="btn btn-primary">Manage Assignment</button><button class ="btn btn-primary">View enrolled students</button><button class ="btn btn-primary">Manage Material</button><button type="button" class="close" onClick="deleteAssignment({{ assignment.id }})">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </li>
+        {% endfor %}
+    </ul>
+</h1>
     {% endblock %}
