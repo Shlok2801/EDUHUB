@@ -58,29 +58,25 @@ def deleteCourse():
 
     return jsonify({})
 
-@manage.route('/enrolled-students', methods=['GET'])
+@manage.route('/enrolled-students', methods=['GET', 'POST'])
 @login_required
 def enrolledStudents():    
-    #if current_user.role != "teacher":
-        #return redirect(url_for('views.home'))
-    
-    courseId = request.args.get('id')
-    print(courseId)
-    if courseId == '': 
-        flash('Wrong request', category='error')
-        #return redirect(url_for('views.home'))
-    course=Course.query.get(courseId)
-    enrolled=Enroll.query.filter_by(course_id=courseId)
-    students=[]
-    for single in enrolled :
-        x= User.query.filter_by(id=single.user_id).first()
-        students.append(x)
-        print(str(x))
-        print(students)
-    if not students :
-        flash('There are no enrolled students to this course', category='info')
-        return render_template('teacher_manage_courses.html', user=current_user)
-    return jsonify({'ok'})
-    return render_template('enrolled_students.html', user=current_user,course=course,students=students)
+        courseId=request.args.get("id")
+        if courseId == '': 
+            flash('Wrong request', category='error')
+            #return redirect(url_for('views.home'))
+        course=Course.query.get(courseId)
+        enrolled=Enroll.query.filter_by(course_id=courseId)
+        students=[]
+        for single in enrolled :
+            x= User.query.filter_by(id=single.user_id).first()
+            students.append(x)
+            print(str(x))
+            print(students)
+        if not students :
+            flash('There are no enrolled students to this course', category='info')
+            return render_template('teacher_manage_courses.html', user=current_user)
+
+        return render_template('enrolled_students.html', user=current_user,course=course,students=students)
     
 
