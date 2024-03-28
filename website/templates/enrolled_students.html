@@ -1,0 +1,16 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+    %}
+    <h1 align="center">ENROLLED STUDENTS
+    <br />
+    <br />
+    <br />
+    <br />
+    <ul class="list-group list-group-flush" id="courses">
+        {% for student in students %}
+        <li class="list-group-item">{{ student.first_name }} {{ student.last_name }}
+            <!--<button type="button" class="bi bi-x" data-toggle="tooltip" data-placement="top" title="Delete this course" onClick="deleteCourse({{ course.id }})"></button>  -->
+        </li>
+        {% endfor %}
+    </ul>
+</h1>
+{% endblock %}

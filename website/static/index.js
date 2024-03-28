@@ -17,3 +17,31 @@ function deleteCourse(courseId){
         });
     }
 }
+
+function enrolledStudents(courseId){      
+    fetch('/manage-t',{
+            method:'POST',
+            body: JSON.stringify({courseId: courseId})
+    }).then((response) => {
+        if (response.ok) {
+          return response.json();
+        }})
+
+
+    // var url = "/enrolled-students?id=" + encodeURIComponent(courseId);       
+    // fetch(url)
+    // .then(response => {
+    //     if (!response.ok) {
+    //         throw new Error('Network response was not ok');
+    //     }
+    //     return response.text();
+    // })
+    // .then(data => {
+    //     // Handle the response data as needed
+    //     //window.location.href = "/enrolled-students";
+    //     console.log(data);
+    // })
+    // .catch(error => {
+    //     console.error('There was a problem with the fetch operation:', error);
+    // });
+}

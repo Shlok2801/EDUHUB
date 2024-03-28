@@ -13,9 +13,10 @@ views = Blueprint('views', __name__)
 @login_required
 def home():
     role = current_user.role
-    print(role + "gihogriohwrgio")
+    print(role)
     if role == 'student':
-        return render_template('home_student.html', user=current_user)
+        return redirect('/course-s')
+        #return render_template('home_student.html', user=current_user)
     else:
         return render_template('home_teacher.html', user=current_user)
 

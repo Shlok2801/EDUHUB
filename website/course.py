@@ -20,15 +20,21 @@ class UploadFileForm(FlaskForm):
 def view_student():
     if request.method=='POST':
         course_id = request.form.get('course_id')
-        
-
         if course_id == "" :
             flash('Please enter course id!', category='error')
-        elif Course.query.filter_by(enroll_id=course_id).first() :
-            new_student = Enroll(course_id=course_id,user_id=current_user.id)
+            return redirect(url_for('views.home'))
+        course=Course.query.filter_by(enroll_id=course_id).first()
+        if course:
+            isEnrolled = Enroll.query.filter_by(course_id=course.id,user_id=current_user.id).first()
+            if isEnrolled:
+                flash('You are already enrolled into this course !', category='error')
+                return redirect(url_for('views.home'))
+            new_student = Enroll(course_id=course.id,user_id=current_user.id)
             db.session.add(new_student)
             db.session.commit()           
             flash('Enrolled successfully!', category='success')
+        else:
+            flash('Course not found', category='error')
     return render_template('home_student.html', user=current_user)
     #Remember to redirect to the course page when done
 
@@ -37,28 +43,33 @@ def view_student():
 def view_teacher():
     if current_user.role != "teacher":
         return render_template('home_student.html', user=current_user)
+    
     if request.method=='POST':
+    
         course_name = request.form.get('course_name')
         course_id = request.form.get('course_id')
         course_des = request.form.get('course_des')
         if course_id != '':
             id=Course.query.filter_by(enroll_id=course_id).first()
-
         if len(course_name) < 1:
-            flash('Please enter an assignment!', category='error')
+            flash('Please enter a name!', category='error')
+            return render_template('teacher_create_course.html', user=current_user)
         elif len(course_des) < 10:
-            flash('Please enter an assignment!', category='error')
+            flash('Please enter a description for your course!', category='error')
+            return render_template('teacher_create_course.html', user=current_user)
         elif id:
             flash('Course id already exist', category='error')
+            return render_template('teacher_create_course.html', user=current_user)
         elif len(course_id) != 6:
-            flash('Course id has to be 6 digits', category='error')            
+            flash('Course id has to be 6 digits', category='error')
+            return render_template('teacher_create_course.html', user=current_user)            
         else:
             new_course = Course(name=course_name, description=course_des,creator=current_user.id,enroll_id= course_id)
             db.session.add(new_course)
             db.session.commit()
             flash('Course created successfully!', category='success')
-
-    return render_template('teacher_manage_courses.html', user=current_user)
+        return render_template('teacher_manage_courses.html', user=current_user)
+    return render_template('teacher_create_course.html', user=current_user)
 
 @course.route('/delete-assignment', methods=['POST'])
 def delete_assignment():
