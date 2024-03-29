@@ -7,8 +7,8 @@
     <br />
     <ul class="list-group list-group-flush" id="courses">
         {% for student in students %}
-        <li class="list-group-item">{{ student.first_name }} {{ student.last_name }}
-            <!--<button type="button" class="bi bi-x" data-toggle="tooltip" data-placement="top" title="Delete this course" onClick="deleteCourse({{ course.id }})"></button>  -->
+        <li class="list-group-item">{{ student.first_name }} {{ student.last_name }} {{ student.email }} 
+            <button type="button" class="bi bi-x" data-toggle="tooltip" data-placement="top" title="Unenroll this student" onClick="unenrollStudent('{{ course.id }}','{{ student.id }}')"></button>
         </li>
         {% endfor %}
     </ul>

@@ -22,3 +22,14 @@ function enrolledStudents(courseId){
     var url = "/enrolled-students?id=" + encodeURIComponent(courseId);       
     window.location.href = url;
 }
+function unenrollStudent(courseId,userId){
+    console.log("!!!!!!!!!!!",courseId,userId)            
+    fetch('/unenroll-student',{
+            method:'POST',
+            body: JSON.stringify({courseId: courseId,userId:userId})
+    }).then((_res) => {
+        var url = "/enrolled-students?id=" + encodeURIComponent(courseId);       
+        window.location.href = url;
+    });
+    
+}

@@ -49,7 +49,9 @@ def deleteCourse():
     if request.method=='POST':
         courseId = json.loads(request.data)
         courseId = courseId['courseId']
-        if courseId == '': flash('Course id has to be 6 digits', category='error')
+        if courseId == '': 
+            flash('No course id', category='error')
+            return redirect(url_for('views.home'))
         course=Course.query.get(courseId)
         if course.creator == current_user.id : 
             db.session.delete(course)
@@ -79,4 +81,32 @@ def enrolledStudents():
 
         return render_template('enrolled_students.html', user=current_user,course=course,students=students)
     
+@manage.route('/unenroll-student', methods=['POST'])
+@login_required
+def unenrollStudent():
+    if current_user.role != "teacher":
+        return redirect(url_for('views.home'))
+    if request.method=='POST':
+        data = json.loads(request.data)
+        courseId = data['courseId']
+        userId = data["userId"]
+        if courseId == '' or userId == '':
+            flash('Bad request ', category='error')
+            return redirect(url_for('views.home'))
+        course=Course.query.get(courseId)
+        if not course:
+            flash('Bad request, course not found ', category='error')
+            return redirect(url_for('views.home'))
+        enroll=Enroll.query.filter_by(course_id=courseId,user_id=userId).first()
+        if not enroll:
+            flash('Bad request, this student is not enrolled to this course ', category='error')
+            return redirect(url_for('views.home'))
+        if course.creator == current_user.id :
+            db.session.delete(enroll)
+            db.session.commit()
+            flash('Student unenrolled succesfully', category='success')
+        else:
+            flash('Bad request, you do not have the permission ot perform this action ! ', category='error')
+            return redirect(url_for('views.home'))
 
+    return jsonify({})
