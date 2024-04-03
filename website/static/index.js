@@ -17,13 +17,11 @@ function deleteCourse(courseId){
         });
     }
 }
-
 function enrolledStudents(courseId){      
     var url = "/enrolled-students?id=" + encodeURIComponent(courseId);       
     window.location.href = url;
 }
-function unenrollStudent(courseId,userId){
-    console.log("!!!!!!!!!!!",courseId,userId)            
+function unenrollStudent(courseId,userId){           
     fetch('/unenroll-student',{
             method:'POST',
             body: JSON.stringify({courseId: courseId,userId:userId})
@@ -32,4 +30,14 @@ function unenrollStudent(courseId,userId){
         window.location.href = url;
     });
     
+}
+function deleteUser(){
+    let text = `Do you really want to delete this account ?\n This process is not reversible`;
+    if (confirm(text) == true) {            
+        fetch('/settings',{
+                method:'POST',
+        }).then((_res) => {
+            window.location.href = '/settings'
+        });
+    }
 }

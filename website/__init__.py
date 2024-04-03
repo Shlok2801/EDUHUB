@@ -19,11 +19,13 @@ def create_app():
     from .submission import submission
     from .course import course
     from .manage import manage
+    from .settings import settings
     app.register_blueprint(course, url_prefix='/')  
     app.register_blueprint(submission, url_prefix='/')
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(manage, url_prefix='/')
+    app.register_blueprint(settings, url_prefix='/')
 
     from .models import User
     
