@@ -29,6 +29,28 @@ def login():
 
     return render_template("login.html", user=current_user)
 
+@auth.route('/change-password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    if request.method == 'POST':
+        current_password = request.form.get('currentPassword')
+        new_password = request.form.get('newPassword')
+        user = User.query.filter_by(email=current_user.email).first()
+        
+        if user and check_password_hash(user.password, current_password):
+            user.password = generate_password_hash(new_password)
+            db.session.commit()
+            flash('Password has been changed.', category='success')
+            return redirect(url_for('views.home'))
+        if check_password_hash(user.password, new_password):
+            flash('New password cannot be the same as old password.', category='error')
+        else:
+            if check_password_hash(user.password, new_password):
+                flash('New password cannot be the same as old password.', category='error')
+            else:
+                flash('Current password is incorrect.', category='error')
+    return render_template("change_password.html", user=current_user)
+
 
 @auth.route('/logout')
 @login_required
