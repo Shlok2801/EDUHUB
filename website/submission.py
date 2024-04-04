@@ -37,12 +37,16 @@ def view_teacher():
 
 @submission.route('/delete-assignment', methods=['POST'])
 def delete_assignment():
+    if current_user.role != "teacher":
+        return redirect(url_for('views.home'))
     assignment = json.loads(request.data)
     assignmentId = assignment['assignmentId']
     assignment = Assignment.query.get(assignmentId)
-    if assignment:
-        if assignment.creator == current_user.id:
-            db.session.delete(assignment)
-            db.session.commit()
-            flash('Assignment deleted successfully!', category='success')
+    if assignmentId == '': 
+        flash('No assignment id', category='error')
+        return redirect(url_for('views.home'))
+    if assignment.creator == current_user.id : 
+        db.session.delete(assignment)
+        db.session.commit()
+        flash('Assignment deleted successfully!', category='success')
     return jsonify({})

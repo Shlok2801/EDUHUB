@@ -71,14 +71,3 @@ def view_teacher():
         return render_template('teacher_manage_courses.html', user=current_user)
     return render_template('teacher_create_course.html', user=current_user)
 
-@course.route('/delete-assignment', methods=['POST'])
-def delete_assignment():
-    assignment = json.loads(request.data)
-    assignmentId = assignment['assignmentId']
-    assignment = Assignment.query.get(assignmentId)
-    if assignment:
-        if assignment.user_id == current_user.id:
-            db.session.delete(assignment)
-            db.session.commit()
-            flash('Assignment deleted successfully!', category='success')
-    return jsonify({})
