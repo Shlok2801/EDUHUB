@@ -42,10 +42,10 @@ function deleteUser(){
     }
 }
 
-function downloadAssignment(){
+function downloadAssignment(file){
     fetch('/downlaod',{
             method:'POST',
-            body: JSON.stringify({assignmentId: assignmentId})
+            body: JSON.stringify({file: file})
     }).then((_res) => {
         window.location.href = '/assignments-t'
     });

@@ -17,7 +17,7 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             {% if assignment.file %}
-            <button type="button" class="btn btn-primary" onClick="downloadAssignment({{ assignment.id }})">
+            <button type="button" class="btn btn-primary" onClick="downloadAssignment({{ assignment.file }})">
                 Download
             </button>
             {% endif %}

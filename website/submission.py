@@ -11,7 +11,10 @@ import json
 from distutils.log import debug 
 from fileinput import filename 
 from flask import *
+
 submission = Blueprint('submission', __name__)
+
+ASSIGNMENTS = 'website/uploads/teacher/assignments'
 
 class UploadFileForm(FlaskForm):
     file = FileField('File', validators=[InputRequired()])
@@ -28,15 +31,13 @@ def view_student():
 def view_teacher():
     if request.method == 'POST':
         assignment_data = request.form.get('assignment')
-        file = request.files.get('file')
+        file = request.files["file"]
         if not assignment_data:
             flash('Enter an assignment', category='error')
         else:
             if file:
-                saved_files_dir = os.path.join(current_app.root_path, 'Saved_files')
-                file_path = os.path.join(saved_files_dir)
-                file.save(file_path)
-                new_assignment = Assignment(data=assignment_data, creator=current_user.id, file=file_path)
+                file.save(os.path.join(ASSIGNMENTS, file.filename))
+                new_assignment = Assignment(data=assignment_data, creator=current_user.id, file=ASSIGNMENTS+file.filename)
             else:
                 new_assignment = Assignment(data=assignment_data, creator=current_user.id)
         
@@ -69,13 +70,7 @@ def delete_assignment():
 @submission.route('/download', methods=['GET','POST'])
 @login_required
 def download():
-    file = request.files.get('file')
-    assignment = json.loads(request.data)
-    assignmentId = assignment['assignmentId']
-    assignment = Assignment.query.get(assignmentId)
-    if not assignment.file:
-        flash('No file attached to this assignment.', category='error')
-        return redirect(url_for('views.home'))
-    
-    directory = "D:\Projects\EDUHUB\Saved_files"  
-    return send_from_directory(directory, file.filename, as_attachment=True)
+    print("hi")
+    file = json.loads(request.data)
+    path = file['file']
+    print(path)
