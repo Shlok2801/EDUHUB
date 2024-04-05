@@ -13,7 +13,7 @@ def create_app():
     app.config['SECRET_KEY'] = 'laudalasangandkapilla'
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     app.config['MATERIAL'] = 'website/uploads/teacher/material'
-    app.config['SUBMISSION'] = 'website/uploads/student'
+    app.config['SUBMISSIONS'] = 'website/uploads/submissions'
     db.init_app(app)
 
     from .views import views
