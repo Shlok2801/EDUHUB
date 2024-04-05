@@ -1,18 +1,26 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
     %}
     <h1 align="center">View or create assignments</h1>
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         <textarea name="assignment" id="assignment" class="form-control"></textarea><br /> 
         <div align="center">
-            <button type="submit" class="btn btn-primary">Add Assingment</button>
+            <button type="submit" value="Upload" class="btn btn-primary">Add Assingment</button>
         </div>
+        <input type="file" name="file" />   
+        
     </form> 
+    <br />
     <ul class="list-group list-group-flush" id="assignments">
         {% for assignment in user.assignments %}
         <li class="list-group-item">{{ assignment.data }}
             <button type="button" class="close" onClick="deleteAssignment({{ assignment.id }})">
                 <span aria-hidden="true">&times;</span>
             </button>
+            {% if assignment.file %}
+            <button type="button" class="btn btn-primary" onClick="downloadAssignment({{ assignment.id }})">
+                Download
+            </button>
+            {% endif %}
         </li>
         {% endfor %}
     </ul>
