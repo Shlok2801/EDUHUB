@@ -33,7 +33,8 @@ def view_teacher():
             flash('Enter an assignment', category='error')
         else:
             if file:
-                file_path = os.path.join("D:\Projects\EDUHUB\Saved_files", secure_filename(file.filename))
+                saved_files_dir = os.path.join(current_app.root_path, 'Saved_files')
+                file_path = os.path.join(saved_files_dir)
                 file.save(file_path)
                 new_assignment = Assignment(data=assignment_data, creator=current_user.id, file=file_path)
             else:
