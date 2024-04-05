@@ -41,13 +41,3 @@ function deleteUser(){
         });
     }
 }
-
-function downloadAssignment(file){
-    console.log("aaaaaaaaaaaaaaaaaa")
-    fetch('/download',{
-            method:'POST',
-            body: JSON.stringify({id: file})
-    }).then((_res) => {
-        window.location.href = '/assignments-t'
-    });
-}

@@ -16,6 +16,7 @@ from os import path
 submission = Blueprint('submission', __name__)
 
 ASSIGNMENTS = 'website/uploads/teacher/assignments'
+ASSIGNMENTS2 = '/uploads/teacher/assignments'
 
 class UploadFileForm(FlaskForm):
     file = FileField('File', validators=[InputRequired()])
@@ -78,28 +79,11 @@ def delete_assignment():
         flash('Assignment deleted successfully!', category='success')
     return render_template('teacher-create.html', user=current_user)
 
-@submission.route('/download', methods=["POST"])
+@submission.route('/downloadAssignment/<id>')
 @login_required
-def download():
-    if request.method == 'POST':
-        assignment = json.loads(request.data)
-        assignmentId = assignment['id']
-        assignment = Assignment.query.get(assignmentId)
-        uploads_directory = os.path.join(current_app.root_path, 'uploads\\teacher\\assignments')
-        file_path = os.path.join(uploads_directory, assignment.file)
-        print(file_path)
-        if os.path.exists(file_path):
-            return send_from_directory(uploads_directory, assignment.file, as_attachment=True)
-        return render_template('teacher-create.html', user=current_user)
-        '''if assignment.file:
-            x = ASSIGNMENTS.replace('website', "")
-            y = x.replace("/", "\\")
-            print(current_app.root_path)
-            uploads = os.path.join(current_app.root_path, y)
-            print(uploads)
-            z = current_app.root_path+y+'\\'
-            print(z)
-        return send_from_directory(z, assignment.file)'''
-        
-      
-
+def downloadAssignment(id):
+    assignmentId = id
+    assignment = Assignment.query.get(assignmentId)
+    uploads_directory = os.path.join(current_app.root_path, 'uploads\\teacher\\assignments')
+    file_path = os.path.join(uploads_directory, assignment.file)     
+    return send_file(file_path,as_attachment=True)
