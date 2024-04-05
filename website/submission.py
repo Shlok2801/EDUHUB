@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, jsonify, redirect, url_for, current_app, jsonify
+from flask import Blueprint, render_template, request, flash, jsonify, redirect, url_for, current_app, jsonify, send_from_directory
 from flask_login import login_required, current_user
 from flask_wtf import FlaskForm
 from . import db
@@ -11,6 +11,7 @@ import json
 from distutils.log import debug 
 from fileinput import filename 
 from flask import *
+from os import path
 
 submission = Blueprint('submission', __name__)
 
@@ -37,7 +38,7 @@ def view_teacher():
         else:
             if file:
                 file.save(os.path.join(ASSIGNMENTS, file.filename))
-                new_assignment = Assignment(data=assignment_data, creator=current_user.id, file=ASSIGNMENTS+file.filename)
+                new_assignment = Assignment(data=assignment_data, creator=current_user.id, file=file.filename)
             else:
                 new_assignment = Assignment(data=assignment_data, creator=current_user.id)
         
@@ -67,10 +68,19 @@ def delete_assignment():
         flash('Assignment deleted successfully!', category='success')
     return jsonify({})
 
-@submission.route('/download', methods=['GET','POST'])
+@submission.route('/download', methods=["POST"])
 @login_required
 def download():
-    print("hi")
-    file = json.loads(request.data)
-    path = file['file']
-    print(path)
+    if request.method == 'POST':
+        assignment = json.loads(request.data)
+        assignmentId = assignment['id']
+        assignment = Assignment.query.get(assignmentId)
+        if assignment.file:
+            x=ASSIGNMENTS.replace("website","")
+            x.replace("/","\\")
+            print(x)
+
+            return send_file(x,assignment.file)
+        
+        return jsonify({})
+

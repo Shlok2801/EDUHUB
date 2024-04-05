@@ -43,9 +43,10 @@ function deleteUser(){
 }
 
 function downloadAssignment(file){
-    fetch('/downlaod',{
+    console.log("aaaaaaaaaaaaaaaaaa")
+    fetch('/download',{
             method:'POST',
-            body: JSON.stringify({file: file})
+            body: JSON.stringify({id: file})
     }).then((_res) => {
         window.location.href = '/assignments-t'
     });

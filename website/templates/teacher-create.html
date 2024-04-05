@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
     %}
     <h1 align="center">View or create assignments</h1>
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data" >
         <textarea name="assignment" id="assignment" class="form-control"></textarea><br /> 
         <div align="center">
             <button type="submit" value="Upload" class="btn btn-primary">Add Assingment</button>
@@ -17,7 +17,7 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             {% if assignment.file %}
-            <button type="button" class="btn btn-primary" onClick="downloadAssignment({{ assignment.file }})">
+            <button type="button" class="btn btn-primary" onClick="downloadAssignment({{ assignment.id }})">
                 Download
             </button>
             {% endif %}
