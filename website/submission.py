@@ -45,7 +45,8 @@ def view_teacher():
             db.session.add(new_assignment)
             db.session.commit()
         
-        flash('Assignment created successfully!', category='success')
+            flash('Assignment created successfully!', category='success')
+            return redirect(url_for('views.home'))
         
 
     return render_template('teacher-create.html', user=current_user)
@@ -60,13 +61,22 @@ def delete_assignment():
     if assignmentId == '': 
         flash('No assignment id', category='error')
         return redirect(url_for('views.home'))
-    if assignment.file:
-            os.remove(assignment.file)
-    if assignment.creator == current_user.id : 
+    if assignment.creator == current_user.id :
         db.session.delete(assignment)
+        if assignment.file:
+            x = ASSIGNMENTS.replace('website', "")
+            y = x.replace("/", "\\")
+            print(current_app.root_path)
+            uploads = os.path.join(current_app.root_path, y)
+            print(uploads)
+            z = current_app.root_path+y+'\\'+assignment.file
+            z = z.replace("\\", "/")
+            os.remove(z) 
+            db.session.delete(assignment)   
+            db.session.commit()
         db.session.commit()
         flash('Assignment deleted successfully!', category='success')
-    return jsonify({})
+    return render_template('teacher-create.html', user=current_user)
 
 @submission.route('/download', methods=["POST"])
 @login_required
@@ -75,12 +85,21 @@ def download():
         assignment = json.loads(request.data)
         assignmentId = assignment['id']
         assignment = Assignment.query.get(assignmentId)
-        if assignment.file:
-            x=ASSIGNMENTS.replace("website","")
-            x.replace("/","\\")
-            print(x)
-
-            return send_file(x,assignment.file)
+        uploads_directory = os.path.join(current_app.root_path, 'uploads\\teacher\\assignments')
+        file_path = os.path.join(uploads_directory, assignment.file)
+        print(file_path)
+        if os.path.exists(file_path):
+            return send_from_directory(uploads_directory, assignment.file, as_attachment=True)
+        return render_template('teacher-create.html', user=current_user)
+        '''if assignment.file:
+            x = ASSIGNMENTS.replace('website', "")
+            y = x.replace("/", "\\")
+            print(current_app.root_path)
+            uploads = os.path.join(current_app.root_path, y)
+            print(uploads)
+            z = current_app.root_path+y+'\\'
+            print(z)
+        return send_from_directory(z, assignment.file)'''
         
-        return jsonify({})
+      
 
