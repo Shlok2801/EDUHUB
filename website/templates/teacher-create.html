@@ -2,7 +2,7 @@
     %}
     <h1 align="center">View or create assignments</h1>
     <form method="POST" enctype="multipart/form-data" >
-        <textarea name="assignment" id="assignment" class="form-control"></textarea><br /> 
+        <textarea name="assignment" id="assignment" class="form-control" minlength="1" required></textarea><br /> 
         <div align="center">
             <button type="submit" value="Upload" class="btn btn-primary">Add Assingment</button>
         </div>
@@ -11,7 +11,7 @@
     </form> 
     <br />
     <ul class="list-group list-group-flush" id="assignments">
-        {% for assignment in user.assignments %}
+        {% for assignment in assignments %}
         <li class="list-group-item">{{ assignment.data }}
             <button type="button" class="close" onClick="deleteAssignment({{ assignment.id }})">
                 <span aria-hidden="true">&times;</span>

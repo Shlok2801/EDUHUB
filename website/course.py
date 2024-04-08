@@ -41,7 +41,11 @@ def view_student():
 @course.route('/student-courses', methods=['GET', 'POST'])
 @login_required
 def viewmycourses():
-    return render_template('student_courses.html', user=current_user)
+    enrolled=Enroll.query.filter_by(user_id=current_user.id).all()
+    courses = []
+    for x in enrolled:
+        courses.append(Course.query.get(x.course_id))
+    return render_template('student_courses.html', user=current_user, courses=courses)
     #Remember to redirect to the course page when done
 
 @course.route('/course-t', methods=['GET', 'POST'])

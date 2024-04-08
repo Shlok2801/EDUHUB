@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 from wtforms import FileField, SubmitField
 from wtforms.validators import InputRequired
 import os
-from .models import Assignment, User
+from .models import *
 import json
 from distutils.log import debug 
 from fileinput import filename 
@@ -28,29 +28,8 @@ class UploadFileForm(FlaskForm):
 def view_student():
     return render_template('student-submit.html', user=current_user)
 
-@submission.route('/assignments-t', methods=['GET', 'POST'])
-@login_required
-def view_teacher():
-    if request.method == 'POST':
-        assignment_data = request.form.get('assignment')
-        file = request.files["file"]
-        if not assignment_data:
-            flash('Enter an assignment', category='error')
-        else:
-            if file:
-                file.save(os.path.join(ASSIGNMENTS, file.filename))
-                new_assignment = Assignment(data=assignment_data, creator=current_user.id, file=file.filename)
-            else:
-                new_assignment = Assignment(data=assignment_data, creator=current_user.id)
-        
-            db.session.add(new_assignment)
-            db.session.commit()
-        
-            flash('Assignment created successfully!', category='success')
-            return redirect(url_for('views.home'))
-        
 
-    return render_template('teacher-create.html', user=current_user)
+
 
 @submission.route('/delete-assignment', methods=['POST'])
 def delete_assignment():
@@ -87,3 +66,33 @@ def downloadAssignment(id):
     uploads_directory = os.path.join(current_app.root_path, 'uploads\\teacher\\assignments')
     file_path = os.path.join(uploads_directory, assignment.file)     
     return send_file(file_path,as_attachment=True)
+
+@submission.route('/Assignments/<id>',methods=["GET",'POST'])
+@login_required
+def view_t(id):
+    courseId = id
+    course = Course.query.get(courseId)
+    if course is None or current_user.id != course.creator:
+        flash("Bad request")
+        return redirect(url_for('views.home'))
+    assignments = Assignment.query.filter_by(course_id=courseId).all()
+    if request.method == 'POST':
+        assignment_data = request.form.get('assignment')
+        file = request.files["file"]
+        if not assignment_data:
+            return flash('Enter an assignment', category='error')
+        else:
+            if file:
+                file.save(os.path.join(ASSIGNMENTS, file.filename))
+                new_assignment = Assignment(data=assignment_data, creator=current_user.id, file=file.filename, course_id=courseId)
+            else:
+                new_assignment = Assignment(data=assignment_data, creator=current_user.id ,course_id=courseId )
+        
+            db.session.add(new_assignment)
+            db.session.commit()
+        
+            flash('Assignment created successfully!', category='success')
+            return render_template('teacher_manage_courses.html', user=current_user)
+    else:
+        return render_template('teacher-create.html', user=current_user, assignments=assignments)
+        

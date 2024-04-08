@@ -84,28 +84,61 @@ def enrolledStudents():
 @manage.route('/unenroll-student', methods=['POST'])
 @login_required
 def unenrollStudent():
+    if current_user.role != "teacher":
+        return redirect(url_for('views.home'))
     if request.method=='POST':
         data = json.loads(request.data)
         courseId = data['courseId']
         userId = data["userId"]
-        if current_user.role == "student" and userId != current_user.id:
-            flash("Bad request", category='error')
-            return redirect(url_for('views.home'))
-        if current_user.role == "teacher" and course.creator != current_user.id :
-            flash("Bad request", category='error')
-            return redirect(url_for('views.home'))
-        if courseId == '' or userId == '':
-            flash('Bad request ', category='error')
-            return redirect(url_for('views.home'))
-        course=Course.query.get(courseId)
-        if not course:
-            flash('Bad request, course not found ', category='error')
-            return redirect(url_for('views.home'))
-        enroll=Enroll.query.filter_by(course_id=courseId,user_id=userId).first()
-        if not enroll:
-            flash('Bad request, this student is not enrolled to this course ', category='error')
-            return redirect(url_for('views.home'))
+    if courseId == '' or userId == '':
+        flash('Bad request ', category='error')
+        return redirect(url_for('views.home'))
+    course=Course.query.get(courseId)
+    if not course:
+        flash('Bad request, course not found ', category='error')
+        return redirect(url_for('views.home'))
+    enroll=Enroll.query.filter_by(course_id=courseId,user_id=userId).first()
+    if not enroll:
+        flash('Bad request, this student is not enrolled to this course ', category='error')
+        return redirect(url_for('views.home'))
+    if course.creator == current_user.id :
         db.session.delete(enroll)
         db.session.commit()
         flash('Student unenrolled succesfully', category='success')
+    else:
+        flash('Bad request, you do not have the permission ot perform this action ! ', category='error')
+        return redirect(url_for('views.home'))
+
+    return jsonify({})
+
+@manage.route('/unenroll-me', methods=['POST'])
+@login_required
+def unenrollme():
+    if current_user.role != "student":
+        return redirect(url_for('views.home'))
+    if request.method=='POST':
+        data = json.loads(request.data)
+        courseId = data['courseId']
+        userId = data["userId"]
+        print(courseId,userId,current_user.id)
+    if courseId == '' or userId == '':
+        flash('Bad request ', category='error')
+        return redirect(url_for('views.home'))
+    course=Course.query.get(courseId)
+    if not course:
+        flash('Bad request, course not found ', category='error')
+        return redirect(url_for('views.home'))
+    enroll=Enroll.query.filter_by(course_id=courseId,user_id=userId).first()
+    if enroll.user_id != current_user.id:
+        flash('Bad request ', category='error')
+        return redirect(url_for('views.home'))
+    if not enroll:
+        flash('Bad request, this student is not enrolled to this course ', category='error')
+        return redirect(url_for('views.home'))
+    print("this is the current user id",current_user.id)
+    db.session.delete(enroll)
+    db.session.commit()
+    flash('Student unenrolled succesfully', category='success')
+
+
     return jsonify({})

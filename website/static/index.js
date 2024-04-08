@@ -31,6 +31,16 @@ function unenrollStudent(courseId,userId){
     });
     
 }
+
+function unenrollMe(courseId,userId){           
+    fetch('/unenroll-me',{
+            method:'POST',
+            body: JSON.stringify({courseId: courseId,userId:userId})
+    }).then((_res) => {       
+        window.location.href = "/student-courses"
+    });
+    
+}
 function deleteUser(){
     let text = `Do you really want to delete this account ?\n This process is not reversible`;
     if (confirm(text) == true) {            
