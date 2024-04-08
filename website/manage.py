@@ -84,12 +84,16 @@ def enrolledStudents():
 @manage.route('/unenroll-student', methods=['POST'])
 @login_required
 def unenrollStudent():
-    if current_user.role != "teacher":
-        return redirect(url_for('views.home'))
     if request.method=='POST':
         data = json.loads(request.data)
         courseId = data['courseId']
         userId = data["userId"]
+        if current_user.role == "student" and userId != current_user.id:
+            flash("Bad request", category='error')
+            return redirect(url_for('views.home'))
+        if current_user.role == "teacher" and course.creator != current_user.id :
+            flash("Bad request", category='error')
+            return redirect(url_for('views.home'))
         if courseId == '' or userId == '':
             flash('Bad request ', category='error')
             return redirect(url_for('views.home'))
@@ -101,12 +105,7 @@ def unenrollStudent():
         if not enroll:
             flash('Bad request, this student is not enrolled to this course ', category='error')
             return redirect(url_for('views.home'))
-        if course.creator == current_user.id :
-            db.session.delete(enroll)
-            db.session.commit()
-            flash('Student unenrolled succesfully', category='success')
-        else:
-            flash('Bad request, you do not have the permission ot perform this action ! ', category='error')
-            return redirect(url_for('views.home'))
-
+        db.session.delete(enroll)
+        db.session.commit()
+        flash('Student unenrolled succesfully', category='success')
     return jsonify({})

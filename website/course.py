@@ -38,6 +38,12 @@ def view_student():
     return render_template('home_student.html', user=current_user)
     #Remember to redirect to the course page when done
 
+@course.route('/student-courses', methods=['GET', 'POST'])
+@login_required
+def viewmycourses():
+    return render_template('student_courses.html', user=current_user)
+    #Remember to redirect to the course page when done
+
 @course.route('/course-t', methods=['GET', 'POST'])
 @login_required
 def view_teacher():

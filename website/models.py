@@ -10,12 +10,12 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(150))
     last_name = db.Column(db.String(150))
     role = db.Column(db.String(150))
-    assignments = db.relationship('Assignment')
-    course = db.relationship('Course')
-    discussion = db.relationship('Discussion')
-    notification = db.relationship('Notification')
-    submission = db.relationship('Submission')
-    enroll = db.relationship('Enroll')
+    assignments = db.relationship('Assignment', cascade='all,delete', backref='User')
+    course = db.relationship('Course', cascade='all,delete', backref='User')
+    discussion = db.relationship('Discussion', cascade='all,delete', backref='User')
+    notification = db.relationship('Notification', cascade='all,delete', backref='User')
+    submission = db.relationship('Submission', cascade='all,delete', backref='User')
+    enroll = db.relationship('Enroll', cascade='all,delete', backref='User')
 
     def __str__(self):
         return f"id : {self.id}, role is {self.role}, email is {self.email} "
@@ -27,6 +27,7 @@ class Assignment(db.Model, UserMixin):
     creator = db.Column(db.Integer, db.ForeignKey('user.id'))
     file = db.Column(db.String(150))
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
+    submission = db.relationship('Submission', cascade='all,delete', backref='Assignment')
 
 class Course(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -34,10 +35,10 @@ class Course(db.Model, UserMixin):
     description = db.Column(db.String(100))
     creator = db.Column(db.Integer, db.ForeignKey('user.id'))
     enroll_id = db.Column(db.Integer)
-    material = db.relationship('Material')
-    notification = db.relationship('Notification')
-    assignment = db.relationship('Assignment')
-    enroll = db.relationship('Enroll')
+    material = db.relationship('Material', cascade='all,delete', backref='Course')
+    notification = db.relationship('Notification', cascade='all,delete', backref='Course')
+    assignment = db.relationship('Assignment', cascade='all,delete', backref='Course')
+    enroll = db.relationship('Enroll', cascade='all,delete', backref='Course')
 
 class Enroll(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
