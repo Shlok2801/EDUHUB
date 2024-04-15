@@ -17,6 +17,7 @@ submission = Blueprint('submission', __name__)
 
 ASSIGNMENTS = 'website/uploads/teacher/assignments'
 ASSIGNMENTS2 = '/uploads/teacher/assignments'
+SUBMISSIONS = 'website/uploads/submissions'
 
 class UploadFileForm(FlaskForm):
     file = FileField('File', validators=[InputRequired()])
@@ -26,7 +27,24 @@ class UploadFileForm(FlaskForm):
 @submission.route('/assignments-s', methods=['GET', 'POST'])
 @login_required
 def view_student():
-    return render_template('student-submit.html', user=current_user)
+    courseId = request.form.get('course_id')
+    course = Course.query.get(courseId)
+    print(courseId)
+    assignments = Assignment.query.filter_by(course_id=courseId).all()
+    if request.method == 'POST':
+        file = request.files.get("file")
+        if file:
+            file.save(os.path.join(SUBMISSIONS, file.filename))
+            new_submission = Submission(submitter=current_user.id, file=file.filename)
+            db.session.add(new_submission)
+            db.session.commit()
+            flash('Assignment submitted successfully!', category='success')
+            return render_template('home_student.html', user = current_user, assignments = assignments, course = course)
+            
+        else:
+            flash("Upload an assignment", category='error')   
+            return render_template('student-submit.html', user = current_user, assignments = assignments, course = course)
+    
 
 
 

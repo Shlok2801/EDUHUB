@@ -1,5 +1,22 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
     %}
-    <h1 align="center">View or submit assignments</h1>
+    <h1 align="center">View or Submit assignments</h1>
+    <br />
+    <ul class="list-group list-group-flush" id="assignments">
+        {% for assignment in assignments %}
+        <li class="list-group-item">{{ assignment.data }}
+            {% if assignment.file %}
+            <a href="{{ '/downloadAssignment/%s'%assignment.id }}" class="button">DOWNLOAD</a>
+            <!--<button type="button" class="btn btn-primary" onClick="downloadAssignment({{ assignment.id }})">
+                Download
+            </button>-->
+            <form method="POST" enctype="multipart/form-data" >
+                <input type="file" name="file" />   <button type="submit" value="Upload" class="btn btn-primary">Submit Assingment</button>
+                
+            </form>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
     {% endblock %}
     

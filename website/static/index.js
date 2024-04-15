@@ -51,3 +51,11 @@ function deleteUser(){
         });
     }
 }
+function CourseId(CourseId){
+    fetch('/assignments-s',{
+            method:'POST',
+            body: JSON.stringify({CourseId: CourseId})
+    }).then((_res) => {
+        window.location.href = '/assignments-s'
+    });
+}
