@@ -1,8 +1,83 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
     %}
-    <h1 align="center">This is the homepage for teachers
+    
+    <h1 align="center">{{ course.name }}</h1>
     <br />
     <br />
-    <a href="assignments-t" id="creation"><button class="btn btn-primary">Create assignments</button></a>
-    </h1>
-    {% endblock %}
+    <div align="center">{{ course.description }}</div>
+    <div class="w3-show-inline-block">
+        <div class="bar">
+          <button class="bar-item" id="assign" onclick="handleHide(this.id)">Assignments</button>
+          <button class="bar-item " id="mat" onclick="handleHide(this.id)">Material</button>
+          <button class="" id="dis" onclick="handleHide(this.id)">Discussion</button>
+        </div>
+    </div>
+    {% if assignments %}
+        <ul class="list-group list-group-flush" id="Assignments" style="display: block;">
+            {% for assignment in assignments %}
+            <li class="list-group-item">{{ assignment.data }} {{ assignment.assign_date }} 
+                <button type="button" class="bi bi-x" data-toggle="tooltip" data-placement="top" title="Unenroll this student" onClick="unenrollStudent()"></button>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+    <div id="Assignments" style="display: block;">
+    There are still no assignments for this course, wait for your teacher to upload them ! 
+    </div>
+    {% endif %}
+
+    {% if material %}
+    <ul class="list-group list-group-flush" id="Material" style="display: none;">
+        {% for single in material %}
+        <li class="list-group-item">{{ single.message }} {{ single.timestamp }}  
+            <button type="button" class="bi bi-x" data-toggle="tooltip" data-placement="top" title="Unenroll this student" onClick="unenrollStudent('{{ course.id }}','{{ student.id }}')"></button>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <div id="Material" style="display: none;">
+    There is still no material for this course, wait for your teacher to upload some !
+    </div> 
+    {% endif %}
+
+    <div id="Discussion" style="display: none;">
+        {% if discussion %}
+        <ul class="list-group list-group-flush" id="Messages">
+            {% for single in discussion %}
+            <li class="list-group-item">{{ single.message }} {{ single.timestamp }} {{ single.user_id }} 
+                <button type="button" class="bi bi-x" data-toggle="tooltip" data-placement="top" title="Unenroll this student" onClick="unenrollStudent('{{ course.id }}','{{ student.id }}')"></button>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        There is still no discussion for this course, wait for your teacher to upload some ! 
+        {% endif %}
+    </div>
+    
+
+
+<script>
+    function handleHide(clicked_id)
+    {
+        let asssignDiv = document.getElementById("Assignments");
+        let materialDiv = document.getElementById("Material");
+        let discDiv = document.getElementById("Discussion");
+        if(clicked_id == "assign"){
+            asssignDiv.style.display="block";
+            materialDiv.style.display="none";
+            discDiv.style.display="none";
+        }
+        if(clicked_id == "mat"){
+            asssignDiv.style.display="none";
+            materialDiv.style.display="block";
+            discDiv.style.display="none";
+        }
+        if(clicked_id == "dis"){
+            asssignDiv.style.display="none";
+            materialDiv.style.display="none";
+            discDiv.style.display="block";
+        }
+    }
+</script>
+
+{% endblock %}

@@ -8,6 +8,8 @@ from wtforms.validators import InputRequired
 import os
 from .models import *
 import json
+from sqlalchemy import desc
+
 course = Blueprint('course', __name__)
 
 class UploadFileForm(FlaskForm):
@@ -81,3 +83,15 @@ def view_teacher():
         return render_template('teacher_manage_courses.html', user=current_user)
     return render_template('teacher_create_course.html', user=current_user)
 
+@course.route('/course/<id>')
+@login_required
+def viewCourseById(id):
+    courseId = id
+    course = Course.query.get(courseId)
+    if not course:
+        flash('Invalid course id!', category='error')
+        return redirect(url_for('views.home'))
+    assignments = Assignment.query.filter_by(course_id=courseId).all()
+    discussion = Discussion.query.filter_by(course_id=courseId).order_by(desc(Discussion.timestamp)).all()   
+    material = Material.query.filter_by(course_id=courseId).all()
+    return render_template("course.html", user=current_user, course=course,assignments=assignments, discussion=discussion,material=material)
