@@ -16,7 +16,7 @@
         <ul class="list-group list-group-flush" id="Assignments" style="display: block;">
             {% for assignment in assignments %}
             <li class="list-group-item">{{ assignment.data }} {{ assignment.assign_date }} 
-                <button type="button" class="bi bi-x" data-toggle="tooltip" data-placement="top" title="Unenroll this student" onClick="unenrollStudent()"></button>
+                <a href="{{ '/assignments-s/%s'%assignment.id }}" ><button type="button" class="bi bi-book" data-toggle="tooltip" data-placement="top" title="View this assignment"></button></a>
             </li>
             {% endfor %}
         </ul>

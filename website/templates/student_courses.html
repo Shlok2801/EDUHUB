@@ -6,11 +6,7 @@
 <ul class="list-group list-group-flush" id="courses">
     {% for course in courses %}
     <li class="list-group-item">{{ course.name }}
-        <a href="{{ '/course/%s'%course.id }}" id="course"><button class ="bi bi-book" data-toggle="tooltip" data-placement="top" title="View course"></button></a>
-        <form action="/assignments-s" method="post">
-            <input type="hidden" name="course_id" value="{{ course.id }}">
-            <button type="submit" class="bi bi-book" data-toggle="tooltip" data-placement="top" title="Assignments for this course"></button>
-        </form>
+        <a href="{{ '/course/%s'%course.id }}" id="course"><button class ="bi bi-eye" data-toggle="tooltip" data-placement="top" title="View course"></button></a>
         <button class="bi bi-person-lines-fill" data-toggle="tooltip" data-placement="top" title="View enrolled students" onClick="enrolledStudents({{ course.id }})"></button>
         <button class="bi bi-archive" data-toggle="tooltip" data-placement="top" title="Material for this course"></button>
         <button type="button" class="bi bi-x" data-toggle="tooltip" data-placement="top" title="Unenroll from this course" onClick="unenrollMe('{{ course.id }}','{{ user.id }}')"></button>

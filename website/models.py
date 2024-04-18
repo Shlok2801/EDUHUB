@@ -73,4 +73,7 @@ class Submission(db.Model, UserMixin):
     description = db.Column(db.String(100))
     timestamp = db.Column(db.DateTime(timezone=True), default=func.now())
     file = db.Column(db.String(150))
-
+    mark = db.Column(db.Integer)
+    comment = db.Column(db.String(100))
+    def __str__(self):
+        return f"id : {self.id}, submitter is {self.submitter}, description is {self.description} file is {self.file} "

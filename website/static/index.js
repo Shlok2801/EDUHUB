@@ -1,9 +1,19 @@
-function deleteAssignment(assignmentId){
+function deleteAssignment(assignmentId,courseId){
     fetch('/delete-assignment',{
             method:'POST',
             body: JSON.stringify({assignmentId: assignmentId})
     }).then((_res) => {
-        window.location.href = '/assignments-t'
+        var url = "/Assignments/" + encodeURIComponent(courseId);       
+        window.location.href = url;
+    });
+}
+function deleteSub(submissionId,assignmentId){
+    fetch('/delete-sub',{
+            method:'POST',
+            body: JSON.stringify({submissionId: submissionId})
+    }).then((_res) => {
+        var url = "/assignments-s/" + encodeURIComponent(assignmentId);       
+        window.location.href = url;
     });
 }
 function deleteCourse(courseId){
@@ -50,12 +60,4 @@ function deleteUser(){
             window.location.href = '/settings'
         });
     }
-}
-function CourseId(CourseId){
-    fetch('/assignments-s',{
-            method:'POST',
-            body: JSON.stringify({CourseId: CourseId})
-    }).then((_res) => {
-        window.location.href = '/assignments-s'
-    });
 }

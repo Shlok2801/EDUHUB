@@ -24,29 +24,64 @@ class UploadFileForm(FlaskForm):
     submit = SubmitField('Upload')
 
 
-@submission.route('/assignments-s', methods=['GET', 'POST'])
+@submission.route('/assignments-s/<id>', methods=['GET', 'POST'])
 @login_required
-def view_student():
-    courseId = request.form.get('course_id')
-    course = Course.query.get(courseId)
-    print(courseId)
-    assignments = Assignment.query.filter_by(course_id=courseId).all()
+def view_student(id):
+    assignmentId = id
+    assignment = Assignment.query.get(assignmentId)
+    if not assignment:
+        flash("Bad request")
+        return redirect(url_for('views.home'))
     if request.method == 'POST':
         file = request.files.get("file")
+        desc = request.form.get('desc')
         if file:
             file.save(os.path.join(SUBMISSIONS, file.filename))
-            new_submission = Submission(submitter=current_user.id, file=file.filename)
-            db.session.add(new_submission)
-            db.session.commit()
-            flash('Assignment submitted successfully!', category='success')
-            return render_template('home_student.html', user = current_user, assignments = assignments, course = course)
-            
+            new_submission = Submission(submitter=current_user.id, file=file.filename, description=desc, assignment_id=id)
         else:
-            flash("Upload an assignment", category='error')   
-            return render_template('student-submit.html', user = current_user, assignments = assignments, course = course)
+            new_submission = Submission(submitter=current_user.id,description=desc, assignment_id=id)
+        db.session.add(new_submission)
+        db.session.commit()
+        flash('Assignment submitted successfully!', category='success')
+    submission = Submission.query.filter_by(assignment_id=assignmentId,submitter=current_user.id).first()
+    #print(submission)
+    return render_template('student-submit.html', user = current_user, assignment = assignment,submission=submission)
     
+@submission.route('/downloadSub/<id>')
+@login_required
+def downloadSub(id):
+    subId = id
+    submission = Submission.query.get(subId)
+    uploads_directory = os.path.join(current_app.root_path, 'uploads\\submissions')
+    file_path = os.path.join(uploads_directory, submission.file)     
+    return send_file(file_path,as_attachment=True)
 
-
+@submission.route('/delete-sub', methods=['POST'])
+def delete_sub():
+    if current_user.role != "student":
+        return redirect(url_for('views.home'))
+    data = json.loads(request.data)
+    subId = data['submissionId']
+    submission = Submission.query.get(subId)
+    if subId == '': 
+        flash('No submission id', category='error')
+        return redirect(url_for('views.home'))
+    if submission.submitter == current_user.id :
+        db.session.delete(submission)
+        if submission.file:
+            x = SUBMISSIONS.replace('website', "")
+            y = x.replace("/", "\\")
+            print(current_app.root_path)
+            uploads = os.path.join(current_app.root_path, y)
+            print(uploads)
+            z = current_app.root_path+y+'\\'+submission.file
+            z = z.replace("\\", "/")
+            os.remove(z) 
+            db.session.delete(submission)   
+            db.session.commit()
+        db.session.commit()
+        flash('Submission deleted successfully!', category='success')
+    return render_template('student_courses.html', user=current_user)
 
 
 @submission.route('/delete-assignment', methods=['POST'])

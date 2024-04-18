@@ -1,22 +1,28 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
     %}
-    <h1 align="center">View or Submit assignments</h1>
+    <h1 align="center">{{ assignment.data }}</h1>
     <br />
-    <ul class="list-group list-group-flush" id="assignments">
-        {% for assignment in assignments %}
-        <li class="list-group-item">{{ assignment.data }}
-            {% if assignment.file %}
-            <a href="{{ '/downloadAssignment/%s'%assignment.id }}" class="button">DOWNLOAD</a>
-            <!--<button type="button" class="btn btn-primary" onClick="downloadAssignment({{ assignment.id }})">
-                Download
-            </button>-->
-            <form method="POST" enctype="multipart/form-data" >
-                <input type="file" name="file" />   <button type="submit" value="Upload" class="btn btn-primary">Submit Assingment</button>
-                
-            </form>
-            {% endif %}
-        </li>
-        {% endfor %}
+    {% if assignment.file %}
+    <a href="{{ '/downloadAssignment/%s'%assignment.id }}" class="button">DOWNLOAD</a>
+    {% endif %}
+    {% if submission %}
+    You have already submitted something on this assignment!
+    <br />
+    <br />
+    {{ submission.description }}
+        {% if submission.file %}
+        <a href="{{ '/downloadSub/%s'%submission.id }}" class="button">Submitted file</a>
+        {% endif %}
+        <button type="button" class="close" onClick="deleteSub('{{ submission.id }}','{{ assignment.id }}')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    {% else %}
+    <form method="POST" enctype="multipart/form-data" >
+        <textarea name="desc" id="desc" class="form-control" minlength="1" required></textarea><br />
+        <input type="file" name="file" />
+        <button type="submit" value="Upload" class="btn btn-primary">Submit Assingment</button>  
+    </form>
+    {% endif %}
     </ul>
     {% endblock %}
     
