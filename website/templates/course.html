@@ -41,17 +41,16 @@
     {% endif %}
 
     <div id="Discussion" style="display: none;">
-        {% if discussion %}
         <ul class="list-group list-group-flush" id="Messages">
             {% for single in discussion %}
-            <li class="list-group-item">{{ single.message }} {{ single.timestamp }} {{ single.user_id }} 
-                <button type="button" class="bi bi-x" data-toggle="tooltip" data-placement="top" title="Unenroll this student" onClick="unenrollStudent('{{ course.id }}','{{ student.id }}')"></button>
+            <li class="list-group-item">{{ single[1].message }} {{ single[1].timestamp }} {{ single[0].first_name }} {{ single[0].last_name }} 
             </li>
             {% endfor %}
         </ul>
-        {% else %}
-        There is still no discussion for this course, wait for your teacher to upload some ! 
-        {% endif %}
+        <div align="center">
+            <textarea id="input" cols="50" rows="10"></textarea>
+            <button placeholder="Type your message..." onClick="sendMessage({{ course.id }})" >Send</button>
+        </div>
     </div>
     
 
@@ -76,6 +75,21 @@
             asssignDiv.style.display="none";
             materialDiv.style.display="none";
             discDiv.style.display="block";
+        }
+    }
+    function sendMessage(courseId){
+        let input = document.getElementById("input");
+        let message = input.value.trim();
+        if(message != ""){
+            fetch("/course/" + encodeURIComponent(courseId),{
+            method:'POST',
+            body: JSON.stringify({message: message})
+            }).then((_res) => {
+                window.location.href = "/course/" + encodeURIComponent(courseId)
+            });
+            //input.value = ""
+            //location.reload();
+            //document.getElementById("dis").click();
         }
     }
 </script>

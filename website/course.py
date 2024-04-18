@@ -8,7 +8,7 @@ from wtforms.validators import InputRequired
 import os
 from .models import *
 import json
-from sqlalchemy import desc
+from sqlalchemy import desc,asc
 
 course = Blueprint('course', __name__)
 
@@ -83,15 +83,28 @@ def view_teacher():
         return render_template('teacher_manage_courses.html', user=current_user)
     return render_template('teacher_create_course.html', user=current_user)
 
-@course.route('/course/<id>')
+@course.route('/course/<id>',methods=['GET', 'POST'])
 @login_required
 def viewCourseById(id):
+    if request.method=="POST":
+        courseId=id
+        body = json.loads(request.data)
+        message = body['message']
+        print(message)
+        if courseId == "":
+            flash("bad request", category="error")
+            return redirect(url_for('views.home'))
+        new_message = Discussion(message=message,course_id=courseId,user_id=current_user.id)
+        db.session.add(new_message)
+        db.session.commit()
+        #print("COMMITTED")
     courseId = id
     course = Course.query.get(courseId)
     if not course:
         flash('Invalid course id!', category='error')
         return redirect(url_for('views.home'))
     assignments = Assignment.query.filter_by(course_id=courseId).all()
-    discussion = Discussion.query.filter_by(course_id=courseId).order_by(desc(Discussion.timestamp)).all()   
+    discussion = db.session.query(User, Discussion).filter(Discussion.user_id == User.id).filter(Discussion.course_id==courseId).order_by(asc(Discussion.timestamp)).all()
     material = Material.query.filter_by(course_id=courseId).all()
+    #discussion is an obj like [(<User 2>, <Discussion 2>), (<User 2>, <Discussion 1>)]
     return render_template("course.html", user=current_user, course=course,assignments=assignments, discussion=discussion,material=material)
