@@ -18,6 +18,7 @@ submission = Blueprint('submission', __name__)
 ASSIGNMENTS = 'website/uploads/teacher/assignments'
 ASSIGNMENTS2 = '/uploads/teacher/assignments'
 SUBMISSIONS = 'website/uploads/submissions'
+MATERIAL = 'website/uploads/teacher/material'
 
 class UploadFileForm(FlaskForm):
     file = FileField('File', validators=[InputRequired()])
@@ -149,3 +150,66 @@ def view_t(id):
     else:
         return render_template('teacher-create.html', user=current_user, assignments=assignments)
         
+
+@submission.route('/Material/<id>', methods=["GET", 'POST'])
+@login_required
+def material(id):
+    courseId = id
+    course = Course.query.get(courseId)
+    if course is None or current_user.id != course.creator:
+        flash("Bad request")
+        return redirect(url_for('views.home'))
+    
+    material = Material.query.filter_by(course_id=courseId).all()
+    
+    if request.method == 'POST':
+        description = request.form.get('description')
+        file = request.files.get("file")
+        if not description:
+            flash('Enter a description', category='error')
+        else:
+            if file:
+                file.save(os.path.join(MATERIAL, secure_filename(file.filename)))
+                new_material = Material(description=description, file=file.filename, course_id=courseId, creator=current_user.id)
+            else:
+                new_material = Material(description=description, course_id=courseId, creator=current_user.id)
+        
+            db.session.add(new_material)
+            db.session.commit()
+        
+            flash('Material added successfully!', category='success')
+            return render_template('teacher_manage_courses.html', user=current_user)
+    return render_template('t_manage_material.html', user=current_user, material=material)
+
+    
+@submission.route('/delete-material', methods=['POST'])
+def delete_material():
+    if current_user.role != "teacher":
+        return redirect(url_for('views.home'))
+    material = json.loads(request.data)
+    materialId = material['materialId']
+    material = Material.query.get(materialId)
+    if materialId == '': 
+        flash('No material id', category='error')
+        return redirect(url_for('views.home'))
+    x = MATERIAL.replace('website', "")
+    y = x.replace("/", "\\")
+    print(current_app.root_path)
+    uploads = os.path.join(current_app.root_path, y)
+    print(uploads)
+    z = current_app.root_path+y+'\\'+material.file
+    z = z.replace("\\", "/")
+    os.remove(z) 
+    db.session.delete(material)   
+    db.session.commit()
+    flash('Material deleted successfully!', category='success')
+    return render_template('t_manage_material.html', user=current_user)
+
+@submission.route('/downloadMaterial/<id>')
+@login_required
+def downloadMaterial(id):
+    materialId = id
+    material = Material.query.get(materialId)
+    uploads_directory = os.path.join(current_app.root_path, 'uploads\\teacher\\material')
+    file_path = os.path.join(uploads_directory, material.file)     
+    return send_file(file_path,as_attachment=True)

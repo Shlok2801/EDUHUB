@@ -54,7 +54,7 @@ class Discussion(db.Model, UserMixin):
 
 class Material(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    message = db.Column(db.String(1000))
+    creator = db.Column(db.String(1000))
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
     description = db.Column(db.String(100))
     timestamp = db.Column(db.DateTime(timezone=True), default=func.now())

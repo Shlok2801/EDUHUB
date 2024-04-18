@@ -1,20 +1,26 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
     %}
-    <h1 align="center">Manage material
-    <br />
-    <br />
-    <form method="POST">
+    <h1 align="center">View or Publish Material</h1>
+    <form method="POST" enctype="multipart/form-data" >
+        <textarea name="description" id="description" class="form-control" minlength="1" required></textarea><br /> 
         <div align="center">
-            <input
-              type="textarea"
-              class="form-control"
-              id="course_id"
-              name="course_id"
-              placeholder="Enter the descritpion of the material"
-            />
-            <button type="button" class="btn btn-primary">Add file</button>
-            <button type="submit" class="btn btn-primary">Publish material</button>
+            <button type="submit" value="Upload" class="btn btn-primary">Publish Material</button>
         </div>
-    </form>
-    </h1>
+        <input type="file" name="file" />   
+        
+    </form> 
+    <br />
+    <ul class="list-group list-group-flush" id="material">
+        {% for mat in material %}
+        <li class="list-group-item">{{ mat.description }}
+            <button type="button" class="close" onClick="deleteMaterial('{{ mat.id }}','{{ mat.course_id }}')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {% if mat.file %}
+            <a href="{{ '/downloadMaterial/%s'%mat.id }}" class="button">DOWNLOAD</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
     {% endblock %}
+    

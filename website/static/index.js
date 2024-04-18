@@ -16,6 +16,15 @@ function deleteSub(submissionId,assignmentId){
         window.location.href = url;
     });
 }
+function deleteMaterial(materialId,courseId){
+    fetch('/delete-material',{
+            method:'POST',
+            body: JSON.stringify({materialId: materialId})
+    }).then((_res) => {
+        var url = "/Material/" + encodeURIComponent(courseId);       
+        window.location.href = url;
+    });
+}
 function deleteCourse(courseId){
     let text = `Do you really want to delete this course ${courseId}`;
     if (confirm(text) == true) {       
