@@ -8,7 +8,6 @@
     <li class="list-group-item">{{ course.name }}
         <a href="{{ '/course/%s'%course.id }}" id="course"><button class ="bi bi-eye" data-toggle="tooltip" data-placement="top" title="View course"></button></a>
         <button class="bi bi-person-lines-fill" data-toggle="tooltip" data-placement="top" title="View enrolled students" onClick="enrolledStudents({{ course.id }})"></button>
-        <button class="bi bi-archive" data-toggle="tooltip" data-placement="top" title="Material for this course"></button>
         <button type="button" class="bi bi-x" data-toggle="tooltip" data-placement="top" title="Unenroll from this course" onClick="unenrollMe('{{ course.id }}','{{ user.id }}')"></button>
     </li>
     {% endfor %}

@@ -29,8 +29,10 @@
     {% if material %}
     <ul class="list-group list-group-flush" id="Material" style="display: none;">
         {% for single in material %}
-        <li class="list-group-item">{{ single.message }} {{ single.timestamp }}  
-            <button type="button" class="bi bi-x" data-toggle="tooltip" data-placement="top" title="Unenroll this student" ></button>
+        <li class="list-group-item">{{ single.description }} {{ single.timestamp }}
+            {% if single.file %}  
+                <a href="{{ '/downloadMaterial/%s'%single.id }}" class="button">Download</a>
+            {% endif %}
         </li>
         {% endfor %}
     </ul>
