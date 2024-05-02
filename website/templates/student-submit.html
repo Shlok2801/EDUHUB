@@ -3,7 +3,7 @@
     <h1 align="center">{{ assignment.data }}</h1>
     <br />
     {% if assignment.file %}
-    <a href="{{ '/downloadAssignment/%s'%assignment.id }}" class="button">DOWNLOAD</a>
+    <a href="{{ '/downloadAssignment/%s'%assignment.id }}" class="button">DOWNLOAD ATTACHMENT</a>
     {% endif %}
     {% if submission %}
     You have already submitted something on this assignment!
@@ -13,9 +13,20 @@
         {% if submission.file %}
         <a href="{{ '/downloadSub/%s'%submission.id }}" class="button">Submitted file</a>
         {% endif %}
+        <br />
+        {% if not(submission.mark) %}
+        <span style="float: right">The teacher hasn't graded your submission yet!
         <button type="button" class="close" onClick="deleteSub('{{ submission.id }}','{{ assignment.id }}')">
             <span aria-hidden="true">&times;</span>
         </button>
+        </span>
+        {% else %}
+        Here is the rating of your submission:
+        {{ submission.mark }}/10
+        <br />
+        {% if submission.comment %} {{ submission.comment }} {% endif %}
+        {% endif %}
+        
     {% else %}
     <form method="POST" enctype="multipart/form-data" >
         <textarea name="desc" id="desc" class="form-control" minlength="1" required></textarea><br />

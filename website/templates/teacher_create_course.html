@@ -39,14 +39,5 @@
         </div>
     </div>
     </form> 
-    <ul class="list-group list-group-flush" id="courses">
-      {% for course in user.course %}
-      <li class="list-group-item">{{ course.name }}
-          <button type="button" class="bi bi-x" data-toggle="tooltip" data-placement="top" title="Delete this course" onClick="deleteCourse({{ course.id }})"></button>
-      </li>
-            </button>
-        </li>
-        {% endfor %}
-    </ul>
     {% endblock %}
     

@@ -1,6 +1,6 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
     %}
-    <h1 align="center">View or Publish Material</h1>
+    <h1 align="center">Manage Material</h1>
     <form method="POST" enctype="multipart/form-data" >
         <textarea name="description" id="description" class="form-control" minlength="1" required></textarea><br /> 
         <div align="center">
@@ -17,7 +17,7 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             {% if mat.file %}
-            <a href="{{ '/downloadMaterial/%s'%mat.id }}" class="button">DOWNLOAD</a>
+            <a href="{{ '/downloadMaterial/%s'%mat.id }}" class="button">DOWNLOAD ATTACHMENT</a>
             {% endif %}
         </li>
         {% endfor %}

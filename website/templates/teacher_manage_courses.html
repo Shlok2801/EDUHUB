@@ -9,6 +9,7 @@
     <ul class="list-group list-group-flush" id="courses">
         {% for course in user.course %}
         <li class="list-group-item">{{ course.name }}
+            <a href="{{ '/course/%s'%course.id }}" id="course"><button class ="bi bi-eye" data-toggle="tooltip" data-placement="top" title="View course"></button></a>
             <a href="{{ '/Assignments/%s'%course.id }}" id="new_assignment"><button class ="bi bi-book" data-toggle="tooltip" data-placement="top" title="Manage Assignment"></button></a>
             <button class ="bi bi-person-lines-fill" data-toggle="tooltip" data-placement="top" title="View enrolled students" onClick="enrolledStudents({{ course.id }})"></button>
             <a href="{{ '/Material/%s'%course.id }}" id="new_material"><button class ="bi bi-archive" data-toggle="tooltip" data-placement="top" title="Manage Material"></button></a>

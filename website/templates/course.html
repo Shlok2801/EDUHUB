@@ -15,7 +15,8 @@
     {% if assignments %}
         <ul class="list-group list-group-flush" id="Assignments" style="display: block;">
             {% for assignment in assignments %}
-            <li class="list-group-item">{{ assignment.data }} {{ assignment.assign_date }} 
+            <li class="list-group-item">{{ assignment.data }}
+                <span style="float: right">{{ assignment.assign_date }}</span>  
                 <a href="{{ '/assignments-s/%s'%assignment.id }}" ><button type="button" class="bi bi-book" data-toggle="tooltip" data-placement="top" title="View this assignment"></button></a>
             </li>
             {% endfor %}
@@ -29,9 +30,10 @@
     {% if material %}
     <ul class="list-group list-group-flush" id="Material" style="display: none;">
         {% for single in material %}
-        <li class="list-group-item">{{ single.description }} {{ single.timestamp }}
+        <li class="list-group-item">{{ single.description }}
+            <span style="float: right">{{ single.timestamp }}</span> 
             {% if single.file %}  
-                <a href="{{ '/downloadMaterial/%s'%single.id }}" class="button">Download</a>
+                <a href="{{ '/downloadMaterial/%s'%single.id }}" class="button">DOWNLOAD ATTACHMENT</a>
             {% endif %}
         </li>
         {% endfor %}
@@ -45,13 +47,15 @@
     <div id="Discussion" style="display: none;">
         <ul class="list-group list-group-flush" id="Messages">
             {% for single in discussion %}
-            <li class="list-group-item">{{ single[1].message }} {{ single[1].timestamp }} {{ single[0].first_name }} {{ single[0].last_name }} 
+            <li class="list-group-item">
+                <span style="float: left">{{ single[1].message }}</span>
+                <span style="float: right">{{ single[0].first_name }} {{ single[0].last_name }} {{ single[1].timestamp }}</span>   
             </li>
             {% endfor %}
         </ul>
         <div align="center">
-            <textarea id="input" cols="50" rows="10"></textarea>
-            <button placeholder="Type your message..." onClick="sendMessage({{ course.id }})" >Send</button>
+            <textarea placeholder="Type your message..." id="input" cols="50" rows="10"></textarea>
+            <button  onClick="sendMessage({{ course.id }})" >Send</button>
         </div>
     </div>
     

@@ -12,6 +12,8 @@ from distutils.log import debug
 from fileinput import filename 
 from flask import *
 from os import path
+from sqlalchemy import desc,asc,update
+from sqlalchemy.orm import sessionmaker
 
 submission = Blueprint('submission', __name__)
 
@@ -34,6 +36,9 @@ def view_student(id):
         flash("Bad request")
         return redirect(url_for('views.home'))
     if request.method == 'POST':
+        submission=Submission.query.filter_by(assignment_id=assignmentId,submitter=current_user.id).first()
+        if submission :
+            return render_template('student-submit.html', user = current_user, assignment = assignment,submission=submission)
         file = request.files.get("file")
         desc = request.form.get('desc')
         if file:
@@ -213,3 +218,35 @@ def downloadMaterial(id):
     uploads_directory = os.path.join(current_app.root_path, 'uploads\\teacher\\material')
     file_path = os.path.join(uploads_directory, material.file)     
     return send_file(file_path,as_attachment=True)
+
+@submission.route('/Submissions/<id>', methods=["GET", 'POST'])
+@login_required
+def viewSubs(id):
+    if request.method=="POST":
+        body = json.loads(request.data)
+        comment = body['comment']
+        mark = body['mark']
+        subId = body["subId"]
+        print(comment,mark,subId)
+        if mark>10:
+            flash("The mark can't be more than 10", category="error")
+            return redirect(url_for('views.home'))
+        if subId == "":
+            flash("bad request", category="error")
+            return redirect(url_for('views.home'))
+        
+        sub = db.session.query(Submission).filter_by(id=subId).first()
+        sub.mark= mark
+        sub.comment=comment
+        db.session.commit()
+
+    assignmentId = id
+    assignment = Assignment.query.get(assignmentId)
+    #submissions = Submission.query.filter_by(assignmentId).all()
+    if assignment is None or current_user.id != assignment.creator:
+        flash("Bad request")
+        return redirect(url_for('views.home'))
+    submissions = db.session.query(User, Submission).filter(Submission.submitter == User.id).filter(Submission.assignment_id==assignmentId).order_by(asc(Submission.timestamp)).all()
+    return render_template('view_submissions.html', user=current_user, submissions=submissions)
+
+

@@ -1,0 +1,51 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+    %}
+    <h1 align="center">View submissions</h1>
+    <br />
+    {% if submissions %}
+    <ul class="list-group list-group-flush" id="submissions">
+        {% for sub in submissions %}
+        <li class="list-group-item">
+            <span style="float: left">{{ sub[0].first_name }} {{ sub[0].last_name }}</span>
+            &nbsp;&nbsp;{{ sub[1].description }}
+            
+            {% if sub[1].file %}
+            <a href="{{ '/downloadSub/%s'%sub[1].id }}" class="button">Submitted file</a>
+            {% endif %}
+            <span style="float: right;">
+                {% if sub[1].comment %} {{sub[1].comment}}{% endif %}
+                {% if sub[1].mark %} {{sub[1].mark}}/10 {% endif %} 
+            </span>
+            <br />
+            <input type="text" id="comment{{ sub[1].id }}" placeholder="Comment...">
+            <input type="number" id="mark{{ sub[1].id }}" min="0" max="10" placeholder="Mark">/10
+            <button  onClick="rateSub({{ sub[1].id }})" >Mark</button>
+        </li>
+        {% endfor %}
+    
+    </ul>
+    {% else %}
+    There are still no submissions for this assignment !
+    {% endif %}
+    <script>
+        function rateSub(subId){
+        red=window.location.href
+        let mark = document.getElementById("mark"+subId);
+        mark=parseInt(mark.value)
+        if(mark>10) alert("The mark can't be bigger than 10")
+        else{
+        let x = document.getElementById("comment"+subId);
+        let comment = x.value.trim();
+            if(mark != ""){
+                fetch(red,{
+                method:'POST',
+                body: JSON.stringify({comment: comment,mark: mark, subId:subId})
+                }).then((_res) => {
+                    window.location.href = red
+                });
+            }
+        }
+    }
+    </script>
+    {% endblock %}
+    
