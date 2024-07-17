@@ -8,5 +8,12 @@ python main.py
 
 ## Viewing The App
 
-Go to `http://127.0.0.1:5000`
-"# EDUHUB" 
+Build the image using 
+
+docker build -t eduhub .
+
+Run this after creating the image
+
+docker run -d -p 5000:5000 eduhub
+
+go to the container and view
