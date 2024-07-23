@@ -1,26 +1,18 @@
-## Running The App
+## Running the App
 
-pip install -r requirements.txt
+- Build the image using 
 
-```bash
-python main.py
-```
+```docker build -t eduhub .```
 
-## Viewing The App
+- Run this after creating the image
 
-Build the image using 
+```docker run -d -p 5000:5000 eduhub```
 
-docker build -t eduhub .
-
-Run this after creating the image
-
-docker run -d -p 5000:5000 eduhub
-
-go to the container and view
+Go to localhost:5000 on your browser to view the website.
 
 ## Documentation
 
 At the following links you can find the produced documentation and the presentation of the project:  
 
 - [Documentation](https://drive.google.com/drive/u/1/folders/1ar_VkmUjrJTHH15H7xb7KgEla419EMP6)  
-- [Presentation](https://www.canva.com/design/DAGLrpsfi9w/RALmUON7wBHdlZJwX_JMGQ/edit?utm_content=DAGLrpsfi9w&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)  
+- [Presentation](https://www.canva.com/design/DAGLrpsfi9w/RALmUON7wBHdlZJwX_JMGQ/edit?utm_content=DAGLrpsfi9w&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
