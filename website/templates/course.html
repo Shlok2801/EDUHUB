@@ -16,8 +16,13 @@
         <ul class="list-group list-group-flush" id="Assignments" style="display: block;">
             {% for assignment in assignments %}
             <li class="list-group-item">{{ assignment.data }}
-                <span style="float: right">{{ assignment.assign_date }}</span>  
+                <span style="float: right">{{ assignment.assign_date }}</span>
+                {% if user.role == "student" %}  
                 <a href="{{ '/assignments-s/%s'%assignment.id }}" ><button type="button" class="bi bi-book" data-toggle="tooltip" data-placement="top" title="View this assignment"></button></a>
+                {% endif %}
+                {% if user.role == "teacher" %}  
+                <a href="{{ '/Assignments/%s'%assignment.id }}" ><button type="button" class="bi bi-book" data-toggle="tooltip" data-placement="top" title="View this assignment"></button></a>
+                {% endif %}
             </li>
             {% endfor %}
         </ul>
